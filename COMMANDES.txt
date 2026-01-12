@@ -1,0 +1,158 @@
+COMMANDES LARAVEL UTILES
+========================
+
+📌 DÉMARRAGE & CONFIGURATION
+
+  # Lancer le serveur de développement
+  php artisan serve
+  # Accessible à: http://localhost:8000
+
+  # Voir toutes les routes disponibles
+  php artisan route:list
+
+  # Générer une nouvelle clé d'application
+  php artisan key:generate
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 BASE DE DONNÉES
+
+  # Exécuter les migrations (créer les tables)
+  php artisan migrate
+
+  # Annuler la dernière migration
+  php artisan migrate:rollback
+
+  # Annuler et relancer toutes les migrations
+  php artisan migrate:refresh
+
+  # Réinitialiser COMPLÈTEMENT la base (ATTENTION: perte de données!)
+  php artisan migrate:reset
+
+  # Voir le statut des migrations
+  php artisan migrate:status
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 TINKER (Console interactive)
+
+  # Ouvrir Tinker
+  php artisan tinker
+
+  # Puis dans Tinker:
+  >>> $recipes = App\Models\Recipe::all();
+  >>> $recipes->count()
+  >>> $recipe = App\Models\Recipe::find(1);
+  >>> $recipe->ingredients()->get()
+  >>> exit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 GÉNÉRATION DE CODE
+
+  # Créer un nouveau contrôleur
+  php artisan make:controller NomController
+
+  # Créer un contrôleur avec resource (CRUD)
+  php artisan make:controller NomController --resource
+
+  # Créer un modèle
+  php artisan make:model NomModele
+
+  # Créer une migration
+  php artisan make:migration create_nom_table
+
+  # Créer une migration + modèle
+  php artisan make:model NomModele -m
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 LOGS & DÉBOGAGE
+
+  # Voir les dernières lignes du fichier log
+  tail -f storage/logs/laravel.log
+
+  # Windows: Voir le fichier log
+  type storage\logs\laravel.log
+
+  # Vider les logs
+  php artisan log:clear
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 CACHE & STOCKAGE
+
+  # Vider le cache des routes
+  php artisan route:cache
+
+  # Vider le cache de configuration
+  php artisan config:cache
+
+  # Vider tout le cache
+  php artisan cache:clear
+
+  # Vider le cache des views
+  php artisan view:clear
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 NETTOYAGE & MAINTENANCE
+
+  # Optimiser l'application
+  php artisan optimize
+
+  # Cleanup complet
+  php artisan optimize:clear
+
+  # Afficher la version de Laravel
+  php artisan --version
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 RESTAURER LES DONNÉES DE TEST
+
+  # Charger les données de test:
+  mysql -u root gestionnaire_recettes < database/seeders/recettes_test.sql
+
+  # Ou via Tinker (plus lent):
+  php artisan tinker
+  >>> include('database/seeders/recettes_test.sql')
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 INSTALLATION DE PAQUETS
+
+  # Installer une nouvelle dépendance
+  composer require vendor/package
+
+  # Supprimer une dépendance
+  composer remove vendor/package
+
+  # Mettre à jour toutes les dépendances
+  composer update
+
+  # Mettre à jour une dépendance spécifique
+  composer update vendor/package
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 FICHIERS IMPORTANTS
+
+.env                          - Configuration (base de données, clés)
+routes/web.php                - Définition des routes
+app/Http/Controllers/          - Dossier des contrôleurs
+app/Models/                    - Dossier des modèles
+resources/views/               - Dossier des vues Blade
+database/migrations/           - Dossier des migrations
+public/                        - Dossier public (CSS, JS, images)
+storage/logs/                  - Fichiers de logs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 ASTUCES
+
+• Redémarrer le serveur après modification du .env
+• Vider le cache (php artisan cache:clear) si rien ne change
+• Utiliser Tinker pour tester rapidement du code
+• Vérifier storage/logs/laravel.log en cas d'erreur
+• Les migrations doivent s'exécuter dans l'ordre

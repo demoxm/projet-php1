@@ -1,0 +1,204 @@
+CHECKLIST D'INSTALLATION
+========================
+
+Avant de démarrer:
+[ ] PHP 8.1+ installé (vérifier: php --version)
+[ ] MySQL installé et en cours d'exécution
+[ ] Composer installé (vérifier: composer --version)
+[ ] XAMPP démarré (Apache + MySQL)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 1: Créer la base de données
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Option A - Via phpMyAdmin (http://localhost/phpmyadmin/):
+    1. Connectez-vous avec root (pas de mot de passe)
+    2. Cliquez "Nouvelle base de données"
+    3. Nom: gestionnaire_recettes
+    4. Cliquez "Créer"
+
+[ ] Option B - Via commande MySQL:
+    mysql -u root
+    CREATE DATABASE gestionnaire_recettes CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    EXIT;
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 2: Installation du projet
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Option A - Installation automatique (RECOMMANDÉ):
+    1. Ouvrir le terminal dans C:\Users\laptop\Desktop\projet_cuisine
+    2. Double-cliquer INSTALL.bat (Windows)
+       OU: bash INSTALL.sh (Linux/Mac)
+    3. Attendre la fin du script
+
+[ ] Option B - Installation manuelle:
+    1. cd cuisine
+    2. composer install
+    3. php artisan key:generate
+    4. php artisan migrate
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 3: Vérification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Exécuter le script de vérification:
+    python3 verification.py
+    (Tous les fichiers doivent être marqués ✅)
+
+[ ] Vérifier les tables dans phpMyAdmin:
+    1. Ouvrir http://localhost/phpmyadmin/
+    2. Cliquer sur "gestionnaire_recettes"
+    3. Vérifier présence de:
+       - recipes
+       - ingredients
+       - recipe_ingredients
+       - steps
+
+[ ] Vérifier le fichier .env:
+    cd cuisine
+    cat .env | grep "^DB_"
+    
+    Doit afficher:
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=gestionnaire_recettes
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 4: Lancer l'application
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Dans le terminal, exécuter:
+    php artisan serve
+
+[ ] Vous devriez voir:
+    Local:   http://127.0.0.1:8000
+    Press Ctrl+C to quit
+
+[ ] Ouvrir le navigateur:
+    http://localhost:8000
+
+[ ] Vous devriez voir:
+    - La barre de navigation "Gestionnaire de Recettes"
+    - Un message "Aucune recette trouvée"
+    - Un bouton "Créer la première recette"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 5: Ajouter les données de test (optionnel)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Dans un nouveau terminal:
+    mysql -u root gestionnaire_recettes < cuisine\database\seeders\recettes_test.sql
+
+[ ] Ou via phpMyAdmin:
+    1. Aller dans "gestionnaire_recettes"
+    2. Cliquer "Importer"
+    3. Choisir le fichier: cuisine/database/seeders/recettes_test.sql
+    4. Cliquer "Exécuter"
+
+[ ] Rafraîchir http://localhost:8000
+    Vous devriez voir:
+    - 6 recettes de test
+    - Filtrage par difficulté
+    - Liste paginée
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 6: Tester les fonctionnalités
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Créer une recette:
+    1. Cliquer "+ Nouvelle recette"
+    2. Remplir le formulaire
+    3. Cliquer "Créer la recette"
+    4. Vérifier la redirection vers les détails
+
+[ ] Ajouter des ingrédients:
+    1. Sur la page de la recette, cliquer "+ Ajouter" (Ingrédients)
+    2. Sélectionner un ingrédient existant
+    3. Entrer quantité et unité
+    4. Cliquer "Ajouter l'ingrédient"
+    5. Vérifier l'ajout
+
+[ ] Ajouter des étapes:
+    1. Sur la page de la recette, cliquer "+ Ajouter une étape"
+    2. Remplir le formulaire
+    3. Cliquer "Ajouter l'étape"
+    4. Vérifier l'affichage numéroté
+
+[ ] Filtrer par difficulté:
+    1. Sur la page d'accueil
+    2. Sélectionner une difficulté
+    3. Vérifier le filtrage
+
+[ ] Éditer une recette:
+    1. Cliquer le bouton "Éditer" sur une recette
+    2. Modifier les champs
+    3. Cliquer "Mettre à jour"
+    4. Vérifier les modifications
+
+[ ] Supprimer une recette:
+    1. Cliquer "Supprimer"
+    2. Confirmer la suppression
+    3. Vérifier la redirection et la suppression
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DÉPANNAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Erreur "SQLSTATE[HY000]: General error: 1030"
+  → Solution: Créer la base de données manuellement
+
+❌ Erreur "Column 'recipes.id' doesn't exist"
+  → Solution: Exécuter php artisan migrate
+
+❌ Page blanche
+  → Solution: Vérifier storage/logs/laravel.log
+
+❌ MySQL ne démarre pas
+  → Solution: Redémarrer XAMPP ou redémarrer l'ordinateur
+
+❌ Erreur de connexion à la base de données
+  → Solution: Vérifier les identifiants dans .env
+  → Vérifier que MySQL est en cours d'exécution
+  → Vérifier que la base de données existe
+
+❌ Composer: command not found
+  → Solution: Installer Composer depuis https://getcomposer.org/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FICHIERS IMPORTANTS À CONSULTER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pour comprendre le projet:
+[ ] Lire: RESUME_LIVRAISON.txt
+[ ] Lire: STRUCTURE_PROJET.txt
+[ ] Lire: cuisine/DOCUMENTATION.md
+[ ] Consulter: COMMANDES.txt
+
+Pour déboguer:
+[ ] Logs: storage/logs/laravel.log
+[ ] Vérifier: .env
+[ ] Vérifier: routes/web.php
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ INSTALLATION TERMINÉE AVEC SUCCÈS!
+
+L'application devrait maintenant être:
+✓ Installée
+✓ Fonctionnelle
+✓ Prête pour l'utilisation
+✓ Prête pour l'évaluation
+
+Bon développement! 🍳

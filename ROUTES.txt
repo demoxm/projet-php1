@@ -1,0 +1,221 @@
+ROUTES & ENDPOINTS - API REST
+=============================
+
+📍 URL DE BASE: http://localhost:8000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏠 PAGE D'ACCUEIL
+
+GET /
+  → Redirection vers /recipes
+  Affiche: Liste de toutes les recettes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🍽️  RECETTES - CRUD COMPLET
+
+GET /recipes
+  → Page: Liste de toutes les recettes
+  Filtre optionnel: ?difficulty=facile|moyen|difficile
+  Affiche: Grille de recettes avec pagination
+
+GET /recipes/create
+  → Page: Formulaire de création d'une recette
+  Champs: title, description, prep_time, difficulty
+
+POST /recipes
+  → Action: Crée une nouvelle recette
+  Redirection: → /recipes/{id}
+  Validation: title unique, tous champs requis
+
+GET /recipes/{id}
+  → Page: Détails complets d'une recette
+  Affiche:
+    - Informations générales
+    - Liste des ingrédients avec quantités
+    - Étapes de préparation numérotées
+    - Actions (éditer, supprimer)
+
+GET /recipes/{id}/edit
+  → Page: Formulaire d'édition d'une recette
+  Champs: title, description, prep_time, difficulty
+
+PUT /recipes/{id}
+  → Action: Met à jour la recette
+  Redirection: → /recipes/{id}
+  Validation: identique à création
+
+DELETE /recipes/{id}
+  → Action: Supprime complètement la recette
+  Cascade: Supprime ingrédients et étapes
+  Redirection: → /recipes (avec message de succès)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🥘 INGRÉDIENTS - GESTION
+
+GET /recipes/{id}/ingredients/add
+  → Page: Formulaire pour ajouter un ingrédient
+  Affiche: Liste des ingrédients existants
+  Modal: Créer un nouvel ingrédient à la volée
+
+POST /recipes/{id}/ingredients
+  → Action: Ajoute un ingrédient à la recette
+  Champs: ingredient_id, quantity, unit
+  Redirection: → /recipes/{id}
+  Validation: ingredient_id existe, quantité requise
+  Vérification: Ingrédient pas déjà dans la recette
+
+POST /recipes/{id}/ingredients/new
+  → API JSON: Crée un nouvel ingrédient
+  Champs: name (unique)
+  Retour: JSON {success: true}
+
+DELETE /recipes/{id}/ingredients/{ingredient_id}
+  → Action: Supprime un ingrédient de la recette
+  Redirection: → /recipes/{id}
+  Note: Ne supprime pas l'ingrédient global, juste l'association
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👨‍🍳 ÉTAPES - GESTION COMPLÈTE
+
+GET /recipes/{id}/steps/create
+  → Page: Formulaire pour ajouter une étape
+  Champs: step_number (numérotation auto), description
+  Suggestion: Prochain numéro calculé automatiquement
+
+POST /recipes/{id}/steps
+  → Action: Crée une nouvelle étape
+  Redirection: → /recipes/{id}
+  Validation: step_number > 0, description requise
+
+GET /recipes/{id}/steps/{step_id}/edit
+  → Page: Formulaire d'édition d'une étape
+  Champs: step_number, description
+
+PUT /recipes/{id}/steps/{step_id}
+  → Action: Met à jour l'étape
+  Redirection: → /recipes/{id}
+  Validation: identique à création
+
+DELETE /recipes/{id}/steps/{step_id}
+  → Action: Supprime l'étape
+  Redirection: → /recipes/{id}
+  Note: Les autres étapes gardent leurs numéros
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📡 API JSON
+
+GET /api/ingredients
+  → Retour: JSON avec tous les ingrédients
+  Format:
+    [
+      {id: 1, name: "Tomate", created_at: "...", updated_at: "..."},
+      {id: 2, name: "Œuf", created_at: "...", updated_at: "..."}
+    ]
+  Usage: Autocomplete, liste pour select
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 REDIRECTIONS & COMPORTEMENTS
+
+Après création recette → /recipes/{id}
+Après édition recette → /recipes/{id}
+Après suppression recette → /recipes
+Après ajout ingrédient → /recipes/{id}
+Après suppression ingrédient → /recipes/{id}
+Après ajout étape → /recipes/{id}
+Après édition étape → /recipes/{id}
+Après suppression étape → /recipes/{id}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ MESSAGES DE FEEDBACK
+
+Succès:
+  "Recette créée avec succès!"
+  "Recette mise à jour avec succès!"
+  "Recette supprimée avec succès!"
+  "Ingrédient ajouté avec succès!"
+  "Ingrédient supprimé de la recette!"
+  "Étape ajoutée avec succès!"
+  "Étape mise à jour avec succès!"
+  "Étape supprimée avec succès!"
+
+Erreurs:
+  "Le titre est requis"
+  "Ce titre existe déjà"
+  "La description est requise"
+  "Cet ingrédient est déjà dans la recette!"
+  "Veuillez sélectionner un ingrédient"
+  Etc.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 SÉCURITÉ
+
+Tous les formulaires:
+  ✓ Protection CSRF (token @csrf)
+  ✓ Validation côté serveur
+  ✓ Validations côté client
+  ✓ Confirmations avant suppression
+  ✓ Paramètres typés (type hinting)
+  ✓ Relations sécurisées (Foreign Keys)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 EXEMPLE D'UTILISATION COMPLÈTE
+
+1. Créer une recette:
+   GET /recipes/create                 (voir formulaire)
+   POST /recipes                       (créer)
+   → Redirige vers /recipes/1
+
+2. Ajouter des ingrédients:
+   GET /recipes/1/ingredients/add      (voir formulaire)
+   POST /recipes/1/ingredients         (ajouter)
+   → Redirige vers /recipes/1
+
+3. Ajouter des étapes:
+   GET /recipes/1/steps/create         (voir formulaire)
+   POST /recipes/1/steps               (créer étape 1)
+   GET /recipes/1/steps/create         (voir formulaire)
+   POST /recipes/1/steps               (créer étape 2)
+   → Redirige vers /recipes/1
+
+4. Consulter:
+   GET /recipes                        (voir liste)
+   GET /recipes?difficulty=moyen       (filtrer)
+   GET /recipes/1                      (voir détails complets)
+
+5. Modifier:
+   GET /recipes/1/edit                 (voir formulaire)
+   PUT /recipes/1                      (mettre à jour)
+   → Redirige vers /recipes/1
+
+6. Supprimer:
+   DELETE /recipes/1                   (supprimer)
+   → Redirige vers /recipes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 TESTER AVEC CURL (optionnel)
+
+Voir toutes les routes:
+  php artisan route:list
+
+Lister les recettes (via navigateur):
+  http://localhost:8000/recipes
+
+Créer une recette (via formulaire):
+  GET http://localhost:8000/recipes/create
+
+API ingrédients (JSON):
+  http://localhost:8000/api/ingredients
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ TOUS LES ENDPOINTS FONCTIONNELS ET TESTÉS ✨
